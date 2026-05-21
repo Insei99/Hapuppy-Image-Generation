@@ -436,7 +436,8 @@ async function generate() {
   output.innerHTML = `<div class="placeholder-text">Generating${n > 1 ? ` ${n} images` : ''}...</div>`;
 
   try {
-    const body = { model, prompt, n, size, quality, response_format: "url" };
+    const body = { model, prompt, n, size, quality };
+
 
     const res = await fetch(`${BASE_URL}/images/generations`, {
       method: "POST",
