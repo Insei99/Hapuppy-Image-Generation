@@ -428,8 +428,33 @@ async function generate() {
       throw new Error(data?.error?.message || JSON.stringify(data));
     }
 
-    const content = data?.choices?.[0]?.message?.content;
-    if (!content) throw new Error("Empty response.\n\nRaw:\n" + JSON.stringify(data, null, 2).slice(0, 600));
+    const message = data?.choices?.[0]?.message;
+const content = message?.content;
+const images = message?.images;
+
+// Handle images in the images array (Hapuppy's format)
+if (images && images.length > 0) {
+  output.innerHTML = "";
+  for (const imgObj of images) {
+    const url = imgObj?.image_url?.url || imgObj?.url;
+    if (!url) continue;
+    const wrap = document.createElement('div');
+    wrap.className = 'img-wrap';
+    const img = document.createElement('img');
+    img.src = url;
+    img.alt = "Generated image";
+    wrap.appendChild(img);
+    output.appendChild(wrap);
+    const hint = document.createElement('div');
+    hint.className = 'save-hint';
+    hint.textContent = 'Long press image → Save to Photos';
+    output.appendChild(hint);
+  }
+  return;
+}
+
+if (!content) throw new Error("Empty response.\n\nRaw:\n" + JSON.stringify(data, null, 2).slice(0, 600));
+
 
     let imageData = null;
     let textContent = null;
